@@ -490,6 +490,8 @@ def predict(
         coco: Coco = Coco.from_coco_dict_or_path(dataset_json_path)
         image_iterator = [str(Path(source) / Path(coco_image.file_name)) for coco_image in coco.images]
         coco_json = []
+    elif isinstance(source, list):
+        image_iterator = source
     elif os.path.isdir(source):
         image_iterator = list_files(
             directory=source,
@@ -502,8 +504,6 @@ def predict(
             source, save_dir, frame_skip_interval, not novisual, view_video
         )
         image_iterator = read_video_frame
-    elif isinstance(source, list):
-        image_iterator = source
     else:
         image_iterator = [source]
 
