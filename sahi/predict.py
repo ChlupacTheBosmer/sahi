@@ -538,11 +538,11 @@ def predict(
         if source_is_video:
             video_name = Path(source).stem
             relative_filepath = video_name + "_frame_" + str(ind)
+        elif isinstance(image_path, np.ndarray): # if source was np array (image)
+            relative_filepath = f"{output_path}_{ind}.{visual_export_format}"
         elif os.path.isdir(source):  # preserve source folder structure in export
             relative_filepath = str(Path(image_path)).split(str(Path(source)))[-1]
             relative_filepath = relative_filepath[1:] if relative_filepath[0] == os.sep else relative_filepath
-        elif isinstance(image_path, np.ndarray): # if source was np array (image)
-            relative_filepath = f"{output_path}_{ind}.{visual_export_format}"
         else:  # no process if source is single file
             relative_filepath = Path(image_path).name
 
@@ -911,3 +911,39 @@ def predict_fiftyone(
     session.view = eval_view.sort_by("eval_fp", reverse=True)
     while 1:
         time.sleep(3)
+
+#Test
+# from ultralytics import YOLO
+# model_path = r"D:\Dílna\Kutění\Python\ICCS\icvt\resources\yolo\best.pt"
+# device = "cpu"
+#
+# # Define sahi settings
+# detection_model = AutoDetectionModel.from_pretrained(
+# model_type='yolov8',
+# model_path=model_path,
+# confidence_threshold=0.6,
+# device=device,
+# )
+#
+# num_images = 10
+# image_height = 100
+# image_width = 100
+# color_channels = 3
+#
+# # Create a dummy 4D array with random values
+# dummy_frame_array = np.random.rand(num_images, image_height, image_width, color_channels)
+#
+# # Flatten the 4D array into a list of 3D arrays (simulating a list of images)
+# list_of_frames = [np.squeeze(frame, axis=0) for frame in np.split(dummy_frame_array, dummy_frame_array.shape[0], axis=0)]
+# list_of_frames = [np.uint8(frame * 255) for frame in list_of_frames]
+# print(len(list_of_frames))
+# print(list_of_frames[0].shape)
+#
+# result = predict(
+#     detection_model = detection_model,
+#     source=list_of_frames,
+#     slice_height=640,
+#     slice_width=640,
+#     overlap_height_ratio = 0.2,
+#     overlap_width_ratio = 0.2
+#     )
