@@ -4,7 +4,7 @@
 import logging
 import os
 import time
-from typing import List, Optional
+from typing import Union, List, Optional
 
 from sahi.utils.import_utils import is_available
 
@@ -341,7 +341,8 @@ def predict(
     model_device: str = None,
     model_category_mapping: dict = None,
     model_category_remapping: dict = None,
-    source: str = None,
+    source: Union[str, np.ndarray, List[np.ndarray]] = None,
+    output_path: str = "image",
     no_standard_prediction: bool = False,
     no_sliced_prediction: bool = False,
     image_size: int = None,
@@ -501,6 +502,8 @@ def predict(
             source, save_dir, frame_skip_interval, not novisual, view_video
         )
         image_iterator = read_video_frame
+    elif isinstance(source, list):
+        image_iterator = source
     else:
         image_iterator = [source]
 
@@ -538,6 +541,8 @@ def predict(
         elif os.path.isdir(source):  # preserve source folder structure in export
             relative_filepath = str(Path(image_path)).split(str(Path(source)))[-1]
             relative_filepath = relative_filepath[1:] if relative_filepath[0] == os.sep else relative_filepath
+        elif isinstance(image_path, np.ndarray): # if source was np array (image)
+            relative_filepath = f"{output_path}_{ind}.{visual_export_format}"
         else:  # no process if source is single file
             relative_filepath = Path(image_path).name
 
