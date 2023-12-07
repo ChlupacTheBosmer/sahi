@@ -685,6 +685,8 @@ def predict(
         time_end = time.time() - time_start
         durations_in_seconds["export_files"] = time_end
 
+        yield object_prediction_list
+
     # export coco results
     if dataset_json_path:
         save_path = str(save_dir / "result.json")
@@ -717,8 +719,8 @@ def predict(
                 "seconds.",
             )
 
-    if return_dict:
-        return {"export_dir": save_dir}
+    # if return_dict:
+    #     return {"export_dir": save_dir}
 
 
 def predict_fiftyone(
