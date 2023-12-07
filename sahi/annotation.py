@@ -93,6 +93,26 @@ class BoundingBox:
         """
         return self.to_xyxy()
 
+    def to_yolo_bbox(self, img_width, img_height):
+        """
+        Returns: [norm_xmin, norm_ymin, norm_width, norm_height]
+        """
+        # Calculate the center coordinates of the bounding box
+        x_center = (self.minx + self.maxx) / 2.0
+        y_center = (self.miny + self.maxy) / 2.0
+
+        # Calculate the width and height of the bounding box
+        width = self.maxx - self.minx
+        height = self.maxy - self.miny
+
+        # Normalize the coordinates by the dimensions of the image
+        x_center_normalized = x_center / img_width
+        y_center_normalized = y_center / img_height
+        width_normalized = width / img_width
+        height_normalized = height / img_height
+
+        return [x_center_normalized, y_center_normalized, width_normalized, height_normalized]
+
     def get_shifted_box(self):
         """
         Returns: shifted BoundingBox
