@@ -685,7 +685,7 @@ def predict(
         time_end = time.time() - time_start
         durations_in_seconds["export_files"] = time_end
 
-        yield object_prediction_list
+        yield prediction_result
 
     # export coco results
     if dataset_json_path:
