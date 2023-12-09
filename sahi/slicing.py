@@ -411,7 +411,7 @@ def slice_image(
 
 
 def slice_coco(
-    coco_annotation_file_path: str,
+    coco_annotation_file_path: Union[str, Dict],
     image_dir: str,
     output_coco_annotation_file_name: str,
     output_dir: Optional[str] = None,
@@ -457,8 +457,9 @@ def slice_coco(
             Path to the saved coco file
     """
 
-    # read coco file
-    coco_dict: Dict = load_json(coco_annotation_file_path)
+    if not isinstance(coco_annotation_file_path, Dict):
+        # read coco file
+        coco_dict: Dict = load_json(coco_annotation_file_path)
     # create image_id_to_annotation_list mapping
     coco = Coco.from_coco_dict_or_path(coco_dict)
     # init sliced coco_utils.CocoImage list
