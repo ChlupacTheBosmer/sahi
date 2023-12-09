@@ -460,6 +460,8 @@ def slice_coco(
     if not isinstance(coco_annotation_file_path, dict):
         # read coco file
         coco_dict: Dict = load_json(coco_annotation_file_path)
+    else:
+        coco_dict = coco_annotation_file_path
     # create image_id_to_annotation_list mapping
     coco = Coco.from_coco_dict_or_path(coco_dict)
     # init sliced coco_utils.CocoImage list
