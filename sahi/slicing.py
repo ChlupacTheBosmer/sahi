@@ -457,7 +457,7 @@ def slice_coco(
             Path to the saved coco file
     """
 
-    if not isinstance(coco_annotation_file_path, Dict):
+    if not isinstance(coco_annotation_file_path, dict):
         # read coco file
         coco_dict: Dict = load_json(coco_annotation_file_path)
     # create image_id_to_annotation_list mapping
