@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple, Union
 
 from sahi.utils.file import import_model_class
 
@@ -27,7 +27,7 @@ class AutoDetectionModel:
         category_mapping: Optional[Dict] = None,
         category_remapping: Optional[Dict] = None,
         load_at_init: bool = True,
-        image_size: int = None,
+        image_size: Union[int, Tuple] = None,
         **kwargs,
     ):
         """
@@ -41,7 +41,7 @@ class AutoDetectionModel:
             config_path: str
                 Path of the config file (ex. 'mmdet/configs/cascade_rcnn_r50_fpn_1x.py')
             device: str
-                Device, "cpu" or "cuda:0"
+                Device, "cpu" or "cuda:0" TODO: Fix so that it is an integer
             mask_threshold: float
                 Value to threshold mask pixels, should be between 0 and 1
             confidence_threshold: float
@@ -52,8 +52,8 @@ class AutoDetectionModel:
                 Remap category ids based on category names, after performing inference e.g. {"car": 3}
             load_at_init: bool
                 If True, automatically loads the model at initalization
-            image_size: int
-                Inference input size.
+            image_size: int, tuple
+                Inference input size. DONE: Modified to allow for tuple as YOLO can expect a tuple and we use it.
         Returns:
             Returns an instance of a DetectionModel
         Raises:
@@ -62,6 +62,9 @@ class AutoDetectionModel:
 
         model_class_name = MODEL_TYPE_TO_MODEL_CLASS_NAME[model_type]
         DetectionModel = import_model_class(model_type, model_class_name)
+
+        # Only pass the image_size as a tuple to yolov8 models
+        image_size = image_size if model_type == 'yolov8' or isinstance(image_size, int) else image_size[0]
 
         return DetectionModel(
             model_path=model_path,

@@ -21,7 +21,8 @@ class DetectionModel:
         category_mapping: Optional[Dict] = None,
         category_remapping: Optional[Dict] = None,
         load_at_init: bool = True,
-        image_size: int = None,
+        image_size: Union[int, Tuple] = None,
+        **kwargs
     ):
         """
         Init object detection/instance segmentation model.
@@ -42,8 +43,8 @@ class DetectionModel:
                 Remap category ids based on category names, after performing inference e.g. {"car": 3}
             load_at_init: bool
                 If True, automatically loads the model at initalization
-            image_size: int
-                Inference input size.
+            image_size: int, tuple
+                Inference input size. DONE: Modified to allow for tuple as YOLO can expect a tuple and we use it.
         """
         self.model_path = model_path
         self.config_path = config_path
@@ -56,6 +57,7 @@ class DetectionModel:
         self.image_size = image_size
         self._original_predictions = None
         self._object_prediction_list_per_image = None
+        self.config = {} if not kwargs else kwargs #self Config is set to kwargs dict if any were passed
 
         self.set_device()
 
